@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
 import type {
   Partner,
   Channel,
@@ -197,6 +197,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const orders = await fetchPreviousOrders(sheetConfig);
     setPreviousOrders(orders);
   }, [sheetConfig]);
+
+  useEffect(() => {
+    if (sheetConfig.connected) {
+      loadPreviousOrders();
+    }
+  }, [sheetConfig.connected, loadPreviousOrders]);
 
   const finalizeSettlement = useCallback(
     async (

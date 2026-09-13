@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useApp } from "@/store/AppContext";
 import { Card, Button, Select } from "@/components/ui";
 import {
@@ -130,8 +130,14 @@ function UploadZone({
 }
 
 export function UploadPage({ onNavigate }: { onNavigate: (p: Page) => void }) {
-  const { channels, selectedChannel, setSelectedChannel, processUpload } =
+  const { channels, selectedChannel, setSelectedChannel, processUpload, loadPreviousOrders, sheetConfig } =
     useApp();
+
+  useEffect(() => {
+    if (sheetConfig.connected) {
+      loadPreviousOrders();
+    }
+  }, [sheetConfig.connected, loadPreviousOrders]);
 
   const [ordersFile, setOrdersFile] = useState<string | null>(null);
   const [earningsFile, setEarningsFile] = useState<string | null>(null);
