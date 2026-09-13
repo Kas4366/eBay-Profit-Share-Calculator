@@ -287,10 +287,10 @@ function syncChannels(ss, channels) {
 }
 
 function writeOrders(ss, orders) {
-  var headers = ['Settlement Date', 'Channel', 'Settlement Month', 'Order Number', 'SKU', 'Partner Name', 'Quantity', 'Sold For', 'Earnings', 'Cost', 'Profit', 'Sale Date', 'Status'];
+  var headers = ['Settlement Date', 'Channel', 'Settlement Month', 'Order Number', 'SKU', 'Partner Name', 'Quantity', 'Sold For', 'Earnings', 'Cost', 'Profit', 'Sale Date', 'Status', 'Refund Amount'];
   var sheet = getOrCreateSheet(ss, 'Orders', headers);
   var data = orders.map(function(o) {
-    return [o.settlementDate, o.channel, o.settlementMonth, o.orderNumber, o.sku, o.partnerName, o.quantity, o.soldFor, o.earnings, o.cost, o.profit, o.saleDate, o.status];
+    return [o.settlementDate, o.channel, o.settlementMonth, o.orderNumber, o.sku, o.partnerName, o.quantity, o.soldFor, o.earnings, o.cost, o.profit, o.saleDate, o.status, o.refundAmount || 0];
   });
   if (data.length > 0) {
     sheet.getRange(sheet.getLastRow() + 1, 1, data.length, headers.length).setValues(data);
@@ -321,7 +321,9 @@ function writeRefundAdjustments(ss, refunds) {
 function readOrders(ss) {
   var sheet = ss.getSheetByName('Orders');
   if (!sheet || sheet.getLastRow() < 2) return [];
-  var values = sheet.getRange(2, 1, sheet.getLastRow() - 1, 13).getValues();
+  var lastCol = sheet.getLastColumn();
+  var numCols = Math.max(lastCol, 14);
+  var values = sheet.getRange(2, 1, sheet.getLastRow() - 1, numCols).getValues();
   return values.filter(function(row) { return row[3]; }).map(function(row) {
     return {
       settlementDate: row[0],
@@ -336,7 +338,8 @@ function readOrders(ss) {
       cost: row[9],
       profit: row[10],
       saleDate: row[11],
-      status: row[12]
+      status: row[12],
+      refundAmount: row[13] || 0
     };
   });
 }

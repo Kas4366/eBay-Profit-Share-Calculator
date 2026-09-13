@@ -134,6 +134,7 @@ export function SettlementPage({
         profit: o.profit,
         saleDate: o.saleDate,
         status: "paid" as const,
+        refundAmount: o.refundFromEarnings,
       })),
       ...refundedOrders.map((o) => ({
         settlementDate: new Date().toISOString().split("T")[0],
@@ -149,6 +150,7 @@ export function SettlementPage({
         profit: o.profit,
         saleDate: o.saleDate,
         status: "refunded" as const,
+        refundAmount: o.refundFromEarnings,
       })),
     ];
 

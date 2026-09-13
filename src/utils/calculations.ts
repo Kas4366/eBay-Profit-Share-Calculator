@@ -62,12 +62,15 @@ export function combineData(
 
     if (prev) {
       previousSettlementMonth = prev.settlementMonth;
+      const prevRefund = prev.refundAmount ?? 0;
+      const currentRefund = earning ? Math.abs(earning.refunds) : 0;
+
       if (prev.status === "refunded") {
         status = "refunded";
         refundAmount = 0;
-      } else if (earning && earning.refunds !== 0) {
+      } else if (currentRefund > prevRefund) {
         status = "refunded";
-        refundAmount = Math.abs(earning.refunds);
+        refundAmount = currentRefund - prevRefund;
       } else {
         status = "paid";
       }

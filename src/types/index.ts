@@ -104,6 +104,7 @@ export interface FinalizedOrder {
   profit: number;
   saleDate: string;
   status: "paid" | "refunded";
+  refundAmount: number;
 }
 
 export interface SheetConfig {
